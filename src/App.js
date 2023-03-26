@@ -13,6 +13,7 @@ const App = () => {
     const [cityForForecast, setCityForForecast] = useState('');
     const [searchCityForecast, setSearchCityForecast] = useState(null);
     const [hourlyForecast, setHourlyForecast] = useState('3');
+    const [favoriteCities, setFavoriteCities] = useState(JSON.parse(localStorage.getItem('favorites')) ?? []);
 
 
     const getNewCityWeather = () => {
@@ -43,6 +44,21 @@ const App = () => {
 
     }
 
+    const showCityData = (city) => {
+        getCityWeather(city).then(r => {
+            setCityWeather(r)
+        }).catch(error =>{
+            console.log(error)
+        });
+
+        getCityForecast(city).then(r =>{
+            setSearchCityForecast(r)
+        }).catch(error => {
+            console.log(error)
+        })
+
+    }
+
     useEffect(() => {
         getCityWeather('Budapest').then(r => {
             setCityWeather(r)
@@ -60,13 +76,13 @@ const App = () => {
 
             <InputText value={searchCity} label={"Keresett városnév"} setValue={setSearchCity}/>
             <Button label={"Keresés"} click={getNewCityWeather}/>
-            {cityWeather && <MainCard cityWeather={cityWeather}/>}
+            {cityWeather && <MainCard cityWeather={cityWeather} favorites={favoriteCities} setFavorites={setFavoriteCities}/>}
 
 
             <div>
 
                 <InputText value={cityForForecast} label={"Előrejelzés a városhoz:"} setValue={setCityForForecast}/>
-                <p>{searchCityForecast.city.name}</p>
+                <p>{searchCityForecast?.city.name}</p>
                 <select value={hourlyForecast} onChange={event => {
                     setHourlyForecast(event.target.value)
                 }}>
@@ -81,6 +97,10 @@ const App = () => {
                 <div className={'container mx-auto flex justify-center gap-5'}>
                     {getForecastList(parseInt(hourlyForecast))}
                 </div>
+            </div>
+
+            <div>
+                {favoriteCities && <div>kedvenc városok: {favoriteCities?.map(city => <div onClick={ ()=> showCityData(city) }>{city}</div>)}</div> }
             </div>
 
         </div>
