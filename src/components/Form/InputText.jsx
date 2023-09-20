@@ -9,9 +9,9 @@ const InputText = ({value, setValue, label}) => {
 
 
     return (
-        <div>
-            <label htmlFor={label}>{label}</label>
-            <input type="text" id={label} value={inputValue} onChange={(e)=>{setInputValue(e.target.value)}}/>
+        <div className={"flex gap-4"}>
+            <label htmlFor={label} className={"font-bold text-gray-600"}>{label}</label>
+            <input className={"border border-gray-400 rounded-sm text-lime-700 outline-lime-600"} type="text" id={label} value={inputValue} onChange={(e)=>{setInputValue(e.target.value)}}/>
         </div>
     );
 };

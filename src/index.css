@@ -3,7 +3,4 @@
 @tailwind utilities;
 
 @layer components {
-    .btn-primary {
-        @apply py-1.5 px-2 bg-orange-300 text-white font-semibold rounded-lg hover:bg-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-75;
-    }
 }
