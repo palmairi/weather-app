@@ -17,6 +17,10 @@ const App = () => {
 
 
     const getNewCityWeather = () => {
+        if(searchCity === ""){
+            return;
+        }
+
         getCityWeather(searchCity).then(response => {
             setCityWeather(response)
         }).catch(error => {
@@ -36,7 +40,7 @@ const App = () => {
         if (searchCityForecast) {
             let list = [];
             for (let i = 0; i < items; i++) {
-                list.push(<ForecastCard forecastData={searchCityForecast?.list[i]}
+                list.push(<ForecastCard key={searchCityForecast?.list[i].dt} forecastData={searchCityForecast?.list[i]}
                                         timezone={searchCityForecast.city.timezone}/>)
             }
             return list
@@ -73,16 +77,23 @@ const App = () => {
 
     return (
         <div className="App">
-
-            <InputText value={searchCity} label={"Keresett városnév"} setValue={setSearchCity}/>
-            <Button label={"Keresés"} click={getNewCityWeather}/>
+            <div className={"container mx-auto px-4"}>
+                <h1 className={"font-bold text-lime-600 text-center text-3xl border-b-2 border-lime-600 pb-1 mb-4"}>Időjárás App</h1>
+                <div className={"flex flex-col md:flex-row items-center justify-center gap-4 mb-4"}>
+                    <InputText value={searchCity} label={"Keresett városnév: "} setValue={setSearchCity}/>
+                    <Button label={"Keresés"} click={getNewCityWeather}/>
+                </div>
             {cityWeather && <MainCard cityWeather={cityWeather} favorites={favoriteCities} setFavorites={setFavoriteCities}/>}
 
 
-            <div>
+            <div className={"flex flex-col items-center mb-4"}>
+                <div className={"flex flex-col md:flex-row gap-4 items-center mb-4"}>
+                    <InputText value={cityForForecast} label={"Előrejelzés városhoz: "} setValue={setCityForForecast}/>
+                    <Button label={"Keresés"} click={getNewCityForecast}/>
+                </div>
 
-                <InputText value={cityForForecast} label={"Előrejelzés a városhoz:"} setValue={setCityForForecast}/>
-                <p>{searchCityForecast?.city.name}</p>
+                <div className={"flex items-center gap-4 mb-4"}>
+                    <p className={"font-bold text-gray-600"}>Előrejelzett időtartam órában:</p>
                 <select value={hourlyForecast} onChange={event => {
                     setHourlyForecast(event.target.value)
                 }}>
@@ -93,16 +104,31 @@ const App = () => {
                     <option value="4">12</option>
                     <option value="5">15</option>
                 </select>
-                <Button label={"Keresés"} click={getNewCityForecast}/>
-                <div className={'container mx-auto flex justify-center gap-5'}>
+                </div>
+                <p className={"font-bold text-2xl text-lime-700 mb-4"}>{searchCityForecast?.city.name}</p>
+
+                <div className={'container mx-auto flex flex-col md:flex-row justify-center gap-5'}>
                     {getForecastList(parseInt(hourlyForecast))}
                 </div>
             </div>
 
-            <div>
-                {favoriteCities && <div>kedvenc városok: {favoriteCities?.map(city => <div onClick={ ()=> showCityData(city) }>{city}</div>)}</div> }
+            <div className={"flex justify-center"}>
+                {favoriteCities &&
+                    <div>
+                        <h2 className={"text-xl font-bold text-lime-600 mb-4"}>Kedvenc városaim:</h2>
+                        <div className={"flex flex-col justify-center items-center md:flex-row gap-2"}>
+                        {favoriteCities?.map(city =>
+                            <div key={city}>
+                                <div className={"bg-lime-700 w-fit py-1 px-2.5 text-white font-semibold rounded-full hover:bg-lime-600 cursor-pointer"}
+                                     onClick={ ()=> showCityData(city) }>
+                                    {city}
+                                </div>
+                            </div>)}
+                        </div>
+                    </div> }
             </div>
 
+            </div>
         </div>
     );
 }
